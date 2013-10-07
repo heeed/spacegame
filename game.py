@@ -2,6 +2,7 @@ import curses
 import random
 from sys import exit
 from time import sleep
+
 myscreen = curses.initscr()
 curses.curs_set(0)
 curses.noecho()
@@ -11,6 +12,7 @@ ent_x = 0
 ent_y = 0
 kling_x = 0
 kling_y = 0
+
 
 def grid(x,y):
 	myscreen.move(10,10)
@@ -38,8 +40,9 @@ def enterprise_start(a,b):
 	ent_y = y
 
 def enterprise_move(d):
-	global ent_x
-	global ent_y
+	global ent_x,kling_x
+	global ent_y,kling_y
+
 	if d == "u":
                	if ent_x > 1:
                        	ent_x -= 1
@@ -76,8 +79,10 @@ def draw_screen():
 	grid(x,y)
 	myscreen.addstr(ent_x,ent_y,"e")
 	myscreen.addstr(kling_x,kling_y,"K")
-	myscreen.addstr(0,30,"ent_X %s"% ent_x)
+	myscreen.addstr(0,30,"ent_x %s"% ent_x)
 	myscreen.addstr(1,30,"ent_y %s"% ent_y)
+	myscreen.addstr(3,30,"kling_x %s"% kling_x)
+        myscreen.addstr(4,30,"kling_y %s"% kling_y)
 	myscreen.refresh()
 
 def draw_weapon():
@@ -96,6 +101,7 @@ def draw_weapon():
 		sleep(0.2)
 	draw_screen()
 
+
 myscreen.move(x,y)
 grid(x,y)
 enterprise_start(x,y)
@@ -103,6 +109,12 @@ klingon_start(x,y)
 while True:
 	key = myscreen.getch()
 	myscreen.addstr(29,30,"Keycode; %s"%key)
+
+  	if (ent_x == kling_x) & (ent_y == kling_y):
+                #draw_screen()
+                #print "boom"
+        	 myscreen.addstr(5,30,"boom")
+                
 	if key == 113:
 		curses.endwin()
 		exit(0)
