@@ -42,35 +42,43 @@ def enterprise_start(a,b):
 def enterprise_move(d):
 	global ent_x,kling_x
 	global ent_y,kling_y
+	old_x = ent_x
+	old_y = ent_y
 
+	
 	if d == "u":
-               	if ent_x > 1:
+	
+           	if ent_x > 1:
                        	ent_x -= 1
                        	return
                	else:
                        	ent_x= 1
 	                return
-	if d == "d":
+	elif d == "d":
+		colided()
                 if ent_x < 24:
                         ent_x += 1
                         return
                 else:
                         ent_x= 24
                         return
-	if d == "l":
+	elif d == "l":
+		colided()
                 if ent_y > 1:
                         ent_y -= 1
                         return
                 else:
                         ent_y= 1
                         return
-	if d == "r":
+	elif d == "r":
+		colided()
                 if ent_y < 24 :
                         ent_y += 1
                         return
                 else:
                         ent_y= 24
                         return
+
 
 
 
@@ -86,7 +94,7 @@ def draw_screen():
 	myscreen.refresh()
 
 def draw_weapon():
-	global ent_x,ent_y
+	global ent_x,ent_y,kling_x,kling_y
 	weap_x = ent_x+1
 	weap_y = ent_y
 	draw_screen()
@@ -98,41 +106,58 @@ def draw_weapon():
 		draw_screen()
 		myscreen.addstr(weap_x,weap_y,"*")
 		myscreen.refresh()
-		sleep(0.2)
-	draw_screen()
+		if weap_x == kling_x and weap_y == kling_y:
+			curses.flash()
+			myscreen.addstr(kling_x,kling_y,".")
+			break
+		else:
+			sleep(0.2)
+			draw_screen()
+def colided():
+	global ent_x,ent_y,kling_x,kling_y
 
-
-myscreen.move(x,y)
+	if ent_x == kling_x and ent_y == kling_y:
+		return True
+	else:
+		
+		return	False	
 grid(x,y)
 enterprise_start(x,y)
 klingon_start(x,y)
 while True:
+	#key = myscreen.getch()
+	draw_screen()
+	#myscreen.addstr(29,30,"Keycode; %s"%key)
+	
+        coll = colided()        
+	if coll is True:
+		myscreen.addstr(7,30,"collsion detected")
+                myscreen.refresh()
+		#draw_screen()
+	else:
+		myscreen.addstr(7,30,"collsion not detected")
+                myscreen.refresh()
 	key = myscreen.getch()
 	myscreen.addstr(29,30,"Keycode; %s"%key)
-
-  	if (ent_x == kling_x) & (ent_y == kling_y):
-                #draw_screen()
-                #print "boom"
-        	 myscreen.addstr(5,30,"boom")
-                
 	if key == 113:
 		curses.endwin()
 		exit(0)
 	elif key == 65:
 		enterprise_move("u")
-		draw_screen()
+		#draw_screen()
 	elif key == 66:
                 enterprise_move("d")
-                draw_screen()
+                #draw_screen()
 	elif key == 68:
                 enterprise_move("l")
-                draw_screen()
+                #draw_screen()
 	elif key == 67:
                 enterprise_move("r")
-                draw_screen()
+                #draw_screen()
 	elif key == 32:
 		draw_weapon()
 	else:	
 		draw_screen()
 
+	draw_screen()
 #curses.endwin()
